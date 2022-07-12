@@ -1,0 +1,35 @@
+---
+title: "dnSNV Genomic Regions"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(here)
+library(ggplot2)
+```
+
+
+```{r load and format data}
+DNM_df <- read.delim(here("../data", "dnSNVs_genomicRegion_intersection.bed"),
+                     header = FALSE,
+                     col.names = c("chrom","start","end","child","region"))
+
+# table of counts by child and region; remove cases where region could not be assigned
+plotting_table <- table(DNM_df$child, DNM_df$region)
+
+plotting_table_df <- as.data.frame(plotting_table)
+colnames(plotting_table_df) <- c("child","region","count")
+
+plotting_table_df <- subset(plotting_table_df, region!=".")
+
+```
+
+
+```{r plot}
+ggplot(plotting_table_df, aes(x=region, y=count, fill=factor(child)))+
+  geom_bar(stat="identity",position="dodge") +
+  scale_fill_discrete(name="Child", breaks=c("proband","sibling"), labels=c("proband","sibling")) +
+  xlab("Genomic Region")+ylab("Number of de novo SNVs")
+```
+
