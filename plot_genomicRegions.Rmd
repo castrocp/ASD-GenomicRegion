@@ -27,9 +27,17 @@ plotting_table_df <- subset(plotting_table_df, region!=".")
 
 
 ```{r plot}
-ggplot(plotting_table_df, aes(x=region, y=count, fill=factor(child)))+
+ggplot(plotting_table_df, aes(x=reorder(region, +count), y=count, fill=child))+
   geom_bar(stat="identity",position="dodge") +
   scale_fill_discrete(name="Child", breaks=c("proband","sibling"), labels=c("proband","sibling")) +
-  xlab("Genomic Region")+ylab("Number of de novo SNVs")
+  scale_x_discrete(labels = c("5_UTR"="5'UTR", "3_UTR"="3'UTR", "CDS"= "Coding Sequence", "intron"="Intron", "intergenic"="Intergenic")) +
+  theme_bw(base_size = 12) +
+  theme(axis.title.x = element_text(margin = margin(t=6, r=0, b=0, l=0)), #space between axis labels and title
+        axis.title.y = element_text(margin = margin(t=0, r=6, b=0, l=0))) +
+  labs(
+    x = "Genomic Region",
+    y = "Number of de novo SNVs")# +
+  #ylim(0,8000)
+  #xlab("Genomic Region")+ylab("Number of de novo SNVs")
 ```
 
